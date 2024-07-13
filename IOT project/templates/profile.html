@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="#">Flask App</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('home') }}">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('about') }}">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('demo') }}">Demo</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('profile') }}">Profile</a>
+          </li>
+        </ul>
+      </div>
+      <button
+        class="btn btn-danger"
+        onclick="window.location.href='{{ url_for('logout') }}'"
+      >
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </button>
+    </nav>
+    <div class="container mt-5">
+      <h1>User Profile</h1>
+      <p>Welcome, {{ session.user }}</p>
+      <button id="train-model-button">Train Model</button>
+      <p id="accuracy-display"></p>
+      <p>Latest Rain Prediction: <span id="latest-prediction"></span></p>
+
+      <script>
+        document
+          .getElementById("train-model-button")
+          .addEventListener("click", function () {
+            fetch("/train-model")
+              .then((response) => response.json())
+              .then((data) => {
+                document.getElementById("accuracy-display").textContent =
+                  "Model Accuracy: " + data.accuracy;
+              })
+              .catch((error) => console.error("Error:", error));
+          });
+
+        // Fetch the latest rain prediction
+        fetch("/get-latest-rain-prediction")
+          .then((response) => response.json())
+          .then((data) => {
+            document.getElementById("latest-prediction").textContent =
+              data.prediction || "No prediction available";
+          })
+          .catch((error) => console.error("Error:", error));
+      </script>
+    </div>
+  </body>
+</html>
